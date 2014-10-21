@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+    <registerSound id="btnHoverSound" filename="Interface/resources/Thip.ogg" />
+    <registerSound id="btnClickSound" filename="Interface/resources/click.wav" />
+    
+    <!-- load styles -->
+    <useStyles filename="nifty-default-styles.xml" />
+    <useControls filename="nifty-default-controls.xml" />
+    
+    <screen id="start" controller="mygame.AppStates.StartScreenAppState">
+        <layer childLayout="horizontal" id="layer1">
+            <image filename="Interface/resources/background.png" height="100%" width="100%" />
+        </layer>
+        
+    
+        
+    
+        <layer id="layer" backgroundColor="#0000" childLayout="center">
+            <panel id="panel" align="left" valign="bottom"  childLayout="vertical" visibleToMouse="true">
+
+                <image id="btnStartGame" filename="Interface/resources/start.png" align="left" childLayout="overlay">
+                    <effect>
+                        <onStartScreen name="hide" targetElement="btnStartGame_hover"></onStartScreen>
+                        <onStartHover name="show" targetElement="btnStartGame_hover" onStartEffect="methodToBeCalledWhenEffectStarted()"></onStartHover>
+                        <onStartHover name="playSound" sound="btnHoverSound"></onStartHover>
+                        <onEndHover name="hide" targetElement="btnStartGame_hover" onStartEffect="methodToBeCalledWhenEffectStarted()"></onEndHover>
+                        <onClick name="playSound" sound="btnClickSound"></onClick>
+                    </effect>
+                    <interact onClick="menuStartGame()"/>
+                    <image id="btnStartGame_hover" name="hide" filename="Interface/resources/startselect.png" align="left" >
+                    </image>
+                </image>
+
+                <image id="btnSettingsGame" filename="Interface/resources/credits.png" align="left" childLayout="overlay">
+                    <effect>
+                        <onStartScreen name="hide" targetElement="btnSettingsGame_hover"></onStartScreen>
+                        <onStartHover name="show" targetElement="btnSettingsGame_hover" onStartEffect="methodToBeCalledWhenEffectStarted()"></onStartHover>
+                        <onStartHover name="playSound" sound="btnHoverSound"></onStartHover>
+                        <onEndHover name="hide" targetElement="btnSettingsGame_hover" onStartEffect="methodToBeCalledWhenEffectStarted()"></onEndHover>
+                        <onClick name="playSound" sound="btnClickSound"></onClick>
+                    </effect>
+                    <interact onClick="menuSettings()"/>
+                    <image id="btnSettingsGame_hover" name="hide" filename="Interface/resources/creditsselect.png" align="left" >
+                    </image>
+                </image>
+
+                <image id="btnQuitGame" filename="Interface/resources/quit.png" align="left" childLayout="overlay">
+                    <effect>
+                        <onStartScreen name="hide" targetElement="btnQuitGame_hover"></onStartScreen>
+                        <onStartHover name="show" targetElement="btnQuitGame_hover" onStartEffect="methodToBeCalledWhenEffectStarted()"></onStartHover>
+                        <onStartHover name="playSound" sound="btnHoverSound"></onStartHover>
+                        <onEndHover name="hide" targetElement="btnQuitGame_hover" onStartEffect="methodToBeCalledWhenEffectStarted()"></onEndHover>
+                        <onClick name="playSound" sound="btnClickSound"></onClick>
+                    </effect>
+                    <interact onClick="menuQuitGame()"/>
+                    <image id="btnQuitGame_hover" name="hide" filename="Interface/resources/quitselect.png" align="left" >
+                    </image>
+                </image>
+            </panel>
+        </layer>
+     
+    </screen>
+  
+  
+     
+    <screen id="loading">
+      <layer childLayout="center" id="layer1" backgroundColor="#FFFFFF">
+          <image filename="Interface/Nifty/resources/loadingImage.png" height="20%" id="backgroundSky" width="20%">
+          </image>
+      </layer>
+    </screen>
+  
+    <screen id="loaded"></screen>
+    
+
+
+
+    </screen>

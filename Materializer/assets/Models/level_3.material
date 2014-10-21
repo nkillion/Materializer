@@ -1,0 +1,247 @@
+material 1398636274_1_Color_007
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.227450980392157 0.227450980392157 0.227450980392157
+      diffuse 0.227450980392157 0.227450980392157 0.227450980392157
+      specular 0.272941176470588 0.272941176470588 0.272941176470588 15.0
+      emissive 0.0 0.0 0.0
+    }
+  }
+}
+material 1398636274_2_Color_004
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.556862745098039 0.556862745098039 0.556862745098039
+      diffuse 0.556862745098039 0.556862745098039 0.556862745098039
+      specular 0.668235294117647 0.668235294117647 0.668235294117647 15.0
+      emissive 0.0 0.0 0.0
+    }
+  }
+}
+material 1398636274_3_Color_A11
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.6 0.0 0.0
+      diffuse 0.6 0.0 0.0
+      specular 0.72 0.0 0.0 15.0
+      emissive 0.0 0.0 0.0
+    }
+  }
+}
+material 1398636274_4_Color_009
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.0 0.0 0.0
+      diffuse 0.0 0.0 0.0
+      specular 0.0 0.0 0.0 15.0
+      emissive 0.0 0.0 0.0
+    }
+  }
+}
+material 1398636274_5_Color_000
+{
+  technique
+  {
+    pass
+    {
+      ambient 1.0 1.0 1.0
+      diffuse 1.0 1.0 1.0
+      specular 1.0 1.0 1.0 15.0
+      emissive 0.0 0.0 0.0
+    }
+  }
+}
+material 1398636274_6_Color_003
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.666666666666667 0.666666666666667 0.666666666666667
+      diffuse 0.666666666666667 0.666666666666667 0.666666666666667
+      specular 0.8 0.8 0.8 15.0
+      emissive 0.0 0.0 0.0
+    }
+  }
+}
+material 1398636274_7_Metal_Corrogated_Shiny
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.756862745098039 0.756862745098039 0.756862745098039
+      diffuse 0.756862745098039 0.756862745098039 0.756862745098039
+      specular 0.908235294117647 0.908235294117647 0.908235294117647 15.0
+      emissive 0.0 0.0 0.0
+      // texture size: 4.0, 4.0
+      texture_unit
+      {
+        texture 1398636274_4_Metal_Corrogated_Shiny.jpg
+      }
+    }
+  }
+}
+material 1398636274_8_Translucent_Resin_Crush_Gray
+{
+  technique
+  {
+    pass
+    {
+      scene_blend alpha_blend
+      depth_check on
+      depth_write off
+      ambient 0.47843137254902 0.72156862745098 0.666666666666667 0.8
+      diffuse 0.47843137254902 0.72156862745098 0.666666666666667 0.8
+      specular 0.574117647058824 0.865882352941176 0.8 0.8 15.0
+      emissive 0.0 0.0 0.0 1.0
+      // texture size: 12.0, 12.0
+      texture_unit
+      {
+        texture 1398636274_1_Translucent_Resin_Crush_Gray.jpg
+      }
+    }
+  }
+}
+material 1398636274_9_Translucent_Glass_Gray
+{
+  technique
+  {
+    pass
+    {
+      scene_blend alpha_blend
+      depth_check on
+      depth_write off
+      ambient 0.976470588235294 0.0 0.0 0.67
+      diffuse 0.976470588235294 0.0 0.0 0.67
+      specular 1.0 0.0 0.0 0.67 15.0
+      emissive 0.0 0.0 0.0 1.0
+    }
+  }
+}
+material 1398636274_10_Concrete_Aggregate_Smoke
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.603921568627451 0.588235294117647 0.580392156862745
+      diffuse 0.603921568627451 0.588235294117647 0.580392156862745
+      specular 0.724705882352941 0.705882352941177 0.696470588235294 15.0
+      emissive 0.0 0.0 0.0
+      // texture size: 12.0, 12.0
+      texture_unit
+      {
+        texture 1398636274_5_Concrete_Aggregate_Smoke.jpg
+      }
+    }
+  }
+}
+material 1398636274_11_Material28
+{
+  technique
+  {
+    pass
+    {
+      scene_blend alpha_blend
+      depth_check on
+      depth_write off
+      ambient 0.729411764705882 0.729411764705882 0.729411764705882 0.7
+      diffuse 0.729411764705882 0.729411764705882 0.729411764705882 0.7
+      specular 0.875294117647059 0.875294117647059 0.875294117647059 0.7 15.0
+      emissive 0.0 0.0 0.0 1.0
+    }
+  }
+}
+material 1398636274_12_Metal_Steel_Textured_White
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.749019607843137 0.749019607843137 0.749019607843137
+      diffuse 0.749019607843137 0.749019607843137 0.749019607843137
+      specular 0.898823529411765 0.898823529411765 0.898823529411765 15.0
+      emissive 0.0 0.0 0.0
+      // texture size: 6.0, 6.0
+      texture_unit
+      {
+        texture 1398636274_3_Metal_Steel_Textured_White.jpg
+      }
+    }
+  }
+}
+material 1398636274_13_Metal_Aluminum_Anodized
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.792156862745098 0.819607843137255 0.858823529411765
+      diffuse 0.792156862745098 0.819607843137255 0.858823529411765
+      specular 0.950588235294118 0.983529411764706 1.0 15.0
+      emissive 0.0 0.0 0.0
+      // texture size: 54.0, 54.0
+      texture_unit
+      {
+        texture 1398636274_6_Metal_Aluminum_Anodized.jpg
+      }
+    }
+  }
+}
+material 1398636274_14_Color_E01
+{
+  technique
+  {
+    pass
+    {
+      ambient 1.0 1.0 0.0
+      diffuse 1.0 1.0 0.0
+      specular 1.0 1.0 0.0 15.0
+      emissive 0.0 0.0 0.0
+    }
+  }
+}
+material 1398636274_15_Material2
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.549019607843137 0.556862745098039 0.552941176470588
+      diffuse 0.549019607843137 0.556862745098039 0.552941176470588
+      specular 0.658823529411765 0.668235294117647 0.663529411764706 15.0
+      emissive 0.0 0.0 0.0
+      // texture size: 20.0, 20.0
+      texture_unit
+      {
+        texture 1398636274_2_Rainbow_Texture_by_GabiGlam.jpg
+      }
+    }
+  }
+}
+material 1398636274_SketchupDefault
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.8 0.8 0.8
+      diffuse 0.8 0.8 0.8
+      specular 0.96 0.96 0.96 15.0
+      emissive 0.0 0.0 0.0
+    }
+  }
+}
