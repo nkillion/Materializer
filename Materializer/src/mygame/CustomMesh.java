@@ -125,7 +125,7 @@ public class CustomMesh extends Mesh {
 	    y += frontVerts[i].y;
 	}
 	 
-	x /= length;
+	x /=   length;
 	y /= length;
 	float z = depth / 2f;
 	
