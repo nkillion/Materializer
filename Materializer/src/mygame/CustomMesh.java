@@ -8,7 +8,7 @@ import com.jme3.scene.VertexBuffer.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-/**
+/** 
  *
  *** Generates a mesh, given the vertices of one side and a depth
  *		Vertices must be provided in either Clockwise or Counter-Clockwise order!!!
