@@ -71,7 +71,7 @@ public class App implements MouseListener {
         panel3.setPreferredSize(new Dimension(285, 400));
         BufferedImage myPicture;
         try {
-            myPicture = ImageIO.read(new File("C:\\Users\\Matt\\Desktop\\crack.png"));
+            myPicture = ImageIO.read(new File("assets\\Images\\crack.png"));
             JLabel picLabel = new JLabel(new ImageIcon(myPicture));
             panel3.add(picLabel);
         } catch (IOException ex) {
@@ -83,7 +83,7 @@ public class App implements MouseListener {
         verts = new ArrayList();
         
         JButton send = new JButton();
-        send.setIcon(new ImageIcon("C:\\Users\\Matt\\Desktop\\send.gif"));
+        send.setIcon(new ImageIcon("assets\\Images\\send.gif"));
         send.addActionListener(new ActionListener() {
  
             public void actionPerformed(ActionEvent e)
@@ -93,7 +93,7 @@ public class App implements MouseListener {
             }
         });
         JButton delete = new JButton();
-        delete.setIcon(new ImageIcon("C:\\Users\\Matt\\Desktop\\delete.gif"));
+        delete.setIcon(new ImageIcon("assets\\Images\\delete.gif"));
         delete.addActionListener(new ActionListener() {
  
             public void actionPerformed(ActionEvent e)
@@ -104,7 +104,7 @@ public class App implements MouseListener {
             }
         });
         JButton backspace = new JButton();
-        backspace.setIcon(new ImageIcon("C:\\Users\\Matt\\Desktop\\backspace.gif"));
+        backspace.setIcon(new ImageIcon("assets\\Images\\backspace.gif"));
         backspace.addActionListener(new ActionListener() {
  
             public void actionPerformed(ActionEvent e)
