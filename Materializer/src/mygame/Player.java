@@ -1,8 +1,11 @@
 package mygame;
 
+import com.bulletphysics.dynamics.RigidBody;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
+import com.jme3.bullet.objects.PhysicsGhostObject;
+import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapText;
 import com.jme3.input.InputManager;
@@ -17,7 +20,12 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.jme3.util.SafeArrayList;
+import java.awt.List;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class Player implements ActionListener {
 
@@ -73,6 +81,7 @@ public class Player implements ActionListener {
         inputManager.addMapping("Crouch", new KeyTrigger(KeyInput.KEY_C));
         inputManager.addMapping("Grenade", new KeyTrigger(KeyInput.KEY_G));
         inputManager.addMapping("Action", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+	inputManager.addMapping("Pickup", new KeyTrigger(KeyInput.KEY_Q));
         inputManager.addListener(this, "Left");
         inputManager.addListener(this, "Right");
         inputManager.addListener(this, "Forward");
@@ -82,8 +91,9 @@ public class Player implements ActionListener {
         inputManager.addListener(this, "Grenade");
         inputManager.addListener(this, "Drop");
         inputManager.addListener(this, "Action");
+	inputManager.addListener(this, "Pickup");
     }
-
+	//change to switch?!
     public void onAction(String binding, boolean isPressed, float tpf) {
         if (binding.equals("Left")) {
             if (isPressed) {
@@ -122,6 +132,23 @@ public class Player implements ActionListener {
             if (isPressed) {
                 initGui();
             }
+	} else if (binding.equals("Pickup")) {
+	    if (isPressed) {
+		SafeArrayList<Spatial> objects = (SafeArrayList) main.getRootNode().getChildren();
+		CollisionResults colRes = new CollisionResults();
+		Vector3f playerPos = pNode.getWorldTranslation();
+		Ray ray = new Ray(this.getLoc(), cam.getDirection());
+		Vector3f objPos;
+		for (Spatial obj : objects){
+		    objPos = obj.getWorldTranslation();
+		    if (playerPos.distance(objPos) < 5) {
+			obj.collideWith(ray, colRes);
+			if(colRes.size() > 0 ){
+			    System.out.println("pickup");
+			}
+		    }
+		}
+	    }
         } else if (binding.equals("Action")) {
             if (!isPressed) {
                 System.out.println("dropped grenade");
