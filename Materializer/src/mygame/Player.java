@@ -139,6 +139,7 @@ public class Player implements ActionListener {
 		Vector3f playerPos = pNode.getWorldTranslation();
 		Ray ray = new Ray(this.getLoc(), cam.getDirection());
 		Vector3f objPos;
+		
 		for (Spatial obj : objects){
 		    objPos = obj.getWorldTranslation();
 		    if (playerPos.distance(objPos) < 5) {
