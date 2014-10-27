@@ -32,7 +32,7 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author Nick
+ * @author Matt Arbiz, Nick
  */
 public class App implements MouseListener {
     
@@ -134,6 +134,10 @@ public class App implements MouseListener {
         main.setDisplayFps(true);
         main.setDisplayStatView(false);
         frame.setLocationRelativeTo(null);
+	
+	//temp fix for issue in which first point clicked does not display; first call to drawCircle draws nothing
+	drawCircle(panel2.getX(), panel2.getY(), panel2, false);
+	
     }
     
      private void initMesh() {
@@ -183,7 +187,7 @@ public class App implements MouseListener {
     }
     public void mouseReleased(MouseEvent m) {
         verts.add(new Vector3f(m.getX() / 100f, (frame.getHeight()- m.getY() - 40) / 100f, 0));
-        drawCircle(m.getX(), m.getY(), panel2,true);
+        drawCircle(m.getX(), m.getY(), panel2, true);
  
         }
     
