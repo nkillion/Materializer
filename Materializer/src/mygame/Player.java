@@ -4,6 +4,7 @@ import com.bulletphysics.dynamics.RigidBody;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.objects.PhysicsGhostObject;
 import com.jme3.bullet.objects.PhysicsRigidBody;
 import com.jme3.collision.CollisionResults;
@@ -39,6 +40,7 @@ public class Player implements ActionListener {
     InputManager inputManager;
     CollisionResults results;
     Shape currentObj;
+    RigidBodyControl heldObj;
 
     public Player(Camera cam, BulletAppState bullet, Main main) {
         forward = backward = left = right = isCrouched = hasObj = false;
@@ -134,46 +136,31 @@ public class Player implements ActionListener {
             }
 	} else if (binding.equals("Pickup")) {
 	    if (isPressed) {
-		SafeArrayList<Spatial> objects = (SafeArrayList) main.getRootNode().getChildren();
-		CollisionResults colRes = new CollisionResults();
-		Vector3f playerPos = pNode.getWorldTranslation();
-		Ray ray = new Ray(this.getLoc(), cam.getDirection());
-		Vector3f objPos;
-		
-		for (Spatial obj : objects){
-		    objPos = obj.getWorldTranslation();
-		    if (playerPos.distance(objPos) < 5) {
-			obj.collideWith(ray, colRes);
-			if(colRes.size() > 0 ){
-			    System.out.println("pickup");
+		if(!hasObj){
+		    SafeArrayList<Spatial> objects = (SafeArrayList) main.getRootNode().getChildren();
+		    CollisionResults colRes = new CollisionResults();
+		    Vector3f playerPos = pNode.getWorldTranslation();
+		    Ray ray = new Ray(this.getLoc(), cam.getDirection());
+		    Vector3f objPos;
+
+		    for (Spatial obj : objects){
+			objPos = obj.getWorldTranslation();
+			if (playerPos.distance(objPos) < 5) {
+			    obj.collideWith(ray, colRes);
+			    if(colRes.size() > 0 ){
+				RigidBodyControl rbc = obj.getControl(RigidBodyControl.class);
+				hasObj = true;
+				heldObj = rbc;
+			    }
 			}
 		    }
+		} else {
+		    hasObj = false;
+		    heldObj = null;
 		}
 	    }
         } else if (binding.equals("Action")) {
-            if (!isPressed) {
-                System.out.println("dropped grenade");
-                Vector3f dir = new Vector3f();
-
-                Vector3f playerPos = pControl.getPhysicsLocation();
-                Vector3f vDir = pControl.getViewDirection();
-                
-                Grenade test = new Grenade(main);
-                main.getRootNode().attachChild(test);
-                
-                vDir.mult(15f);
-                playerPos = playerPos.add(vDir);
-               // playerPos = playerPos.add(new Vector3f(0f, 5f, 0f));
-                //dir.setZ(30f);
-                //dir.y = 0f;
-                //dir.z = 0;
-                test.controller.getRigidBodyControl().setPhysicsLocation(playerPos);
-                //test.controller.getRigidBodyControl().setCollisionGroup(1);
-                //test.controller.getRigidBodyControl().removeCollideWithGroup(2);
-                //pControl.removeCollideWithGroup(1);
-                //test.
-                test.controller.getRigidBodyControl().setLinearVelocity(cam.getDirection().mult(5));
-            }
+	    
         }
 
     }
@@ -231,15 +218,9 @@ public class Player implements ActionListener {
             resetPlayer();
         }
 
-        if (!hasObj) {
-            for (Shape s : main.shapes) {
-                if (pLoc.distance(s.getWorldTranslation()) < 4f) {
-                    System.out.println("obj in range");
-                    pickUp(s);
-                    hasObj = true;
-                    currentObj = s;
-                }
-            }
+        if (hasObj) {
+            heldObj.setPhysicsLocation(pNode.getLocalTranslation().add(cam.getDirection().mult(5f)));
+	    heldObj.setPhysicsRotation(cam.getRotation());
         }
 
 
