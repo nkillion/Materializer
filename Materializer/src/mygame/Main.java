@@ -86,7 +86,6 @@ public class Main extends SimpleApplication{
   
   String timeStr;
   float secs;
-  float mins;
   BitmapText hudText;
     
 
@@ -255,37 +254,23 @@ public class Main extends SimpleApplication{
         if (!(hudText == null)){
             guiNode.detachChild(hudText);
         }
-        mins = 1;
-        secs = 60;
+        secs = 265;
         hudText = new BitmapText(guiFont, false);
         hudText.setSize(guiFont.getCharSet().getRenderedSize() * 2);      // font size
         hudText.setColor(ColorRGBA.Red);                             // font color
-        hudText.setText(mins + ":" + secs);             // the text
+        hudText.setText("Loading...");             // the text
         hudText.setLocalTranslation((settings.getWidth() / 2) - 50, settings.getHeight(), 0); // position
         guiNode.attachChild(hudText);
     }
     
     public void updateClock(float tpf){
-        if (secs >= 1){
-            secs-= 0.008;
-            if (secs >= 10){
-                timeStr = ((int)mins + ":" + (int)secs);
-            }
-            else{
-                timeStr = ((int)mins + ":0" + (int)secs);
-            }
-        }
-        else if (secs <= 1 && mins > 0){
-            mins -= 1;
-            secs = 60;
-            timeStr = ((int)mins + ":" + (int)secs);
-        }
-        else if (secs <=1 && mins == 0){
-            timeStr = "Time's up";
+        secs -= tpf;
+        if (secs <= 0){
+            timeStr = "Time's up!";
             game.lvl.removeFromScene(bullet, rootNode);
             game.lvl.addToScene(bullet, rootNode);
         }
         
-        hudText.setText(timeStr);
+        hudText.setText((int)secs/60 + ":" + (((int)secs%60 < 10) ? "0"+(int)secs%60 : (int)secs%60));
     }
 }
