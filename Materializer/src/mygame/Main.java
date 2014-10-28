@@ -88,7 +88,7 @@ public class Main extends SimpleApplication{
   float secs;
   BitmapText hudText;
     
-
+ 
     
     public static void main(String[] args) {
 
@@ -209,15 +209,21 @@ public class Main extends SimpleApplication{
         public void initLights() {
             
           //white ambient
-//        AmbientLight ambient = new AmbientLight();
-//        ambient.setColor(ColorRGBA.White);
-//        rootNode.addLight(ambient);
+        AmbientLight ambient = new AmbientLight();
+        ambient.setColor(ColorRGBA.Red.mult(.2f));
+        rootNode.addLight(ambient);
         
             //white directional
             DirectionalLight sun = new DirectionalLight();
             sun.setDirection((new Vector3f(-0.3f, -0.4f, -0.5f)).normalizeLocal());
             sun.setColor(ColorRGBA.White);
             rootNode.addLight(sun);
+	    
+	    //blue directional
+            DirectionalLight sun1 = new DirectionalLight();
+            sun1.setDirection((new Vector3f(0.3f, -0.4f, 0.5f)).normalizeLocal());
+            sun1.setColor(ColorRGBA.Blue.mult(.5f));
+            rootNode.addLight(sun1);
 
         //shadow
 //        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, 1024, 2);
@@ -236,7 +242,7 @@ public class Main extends SimpleApplication{
         
         public void initMaterial() {
              magenta = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-        magenta.setBoolean("UseMaterialColors", true);
+    //    magenta.setBoolean("UseMaterialColors", true);
 	magenta.setColor("Ambient", ColorRGBA.Gray);
         magenta.setColor("Diffuse", ColorRGBA.Blue);
         magenta.setColor("Specular", ColorRGBA.Red);
