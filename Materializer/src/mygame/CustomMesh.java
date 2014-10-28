@@ -68,7 +68,7 @@ public class CustomMesh extends Mesh {
     
     //constructor without color option, defaults to uncolored
     public CustomMesh(Vector3f[] verts, float depth) {
-	this(verts, depth, true);
+	this(verts, depth, false);
     }
     
     //ensure vertices are in counterclockwise order. if not, reverse their order
@@ -282,15 +282,23 @@ public class CustomMesh extends Mesh {
         triangleIndices.add(finalVertList.size());
 	finalVertList.add(v2);
         triangleIndices.add(finalVertList.size());
-	finalVertList.add(v3); 
+	finalVertList.add(v3); /*
 	Vector3f cross1 = v1.cross(v2).normalize();
 	Vector3f cross2 = v2.cross(v3).normalize();
 	Vector3f cross3 = v3.cross(v1).normalize();
 	Vector3f cross = new Vector3f();
+	//cross = (v1.add(v2).add(v3)).divide(3);
 	
-	cross.x = Math.abs((cross1.x + cross2.x + cross3.x) / 3f);
-	cross.y = Math.abs((cross1.y + cross2.y + cross3.y) / 3f);
-	cross.z = Math.abs((cross1.z + cross2.z + cross3.z) / 3f);
+	cross.x = (Math.abs(cross1.x) + Math.abs(cross2.x) + Math.abs(cross3.x)) / 3f;
+	cross.y = (Math.abs(cross1.y) + Math.abs(cross2.y) + Math.abs(cross3.y)) / 3f;
+	cross.z = (Math.abs(cross1.z) + Math.abs(cross2.z) + Math.abs(cross3.z)) / 3f;*/
+	Vector3f cross1, cross2;
+	cross1 = (v2.subtract(v1)).normalize();
+	cross2 = (v3.subtract(v2)).normalize();
+	Vector3f cross = cross1.cross(cross2);
+//	cross.x = Math.abs(cross.x);
+//	cross.y = Math.abs(cross.y);
+//	cross.z = Math.abs(cross.z);
 	normals.add(cross);
 	normals.add(cross);
 	normals.add(cross);
@@ -385,13 +393,13 @@ public class CustomMesh extends Mesh {
 	    triangleIndicesArray[i] = (Integer) triangleIndices.get(i);
 	    triangleIndicesArray[i + triangleIndices.size()] = (Integer) triangleIndices.get(i) + length*2;
 	    triangleIndicesArray[i + triangleIndices.size() * 2] = (Integer) triangleIndices.get(i) + length*4;
-	}
-	for (i = 0; i < normals.length; i++) {
-	    System.out.println(i + ":\t" + verts[i].x + ", " + verts[i].y + ", " + verts[i].z + "\n\t" + normals[i].x + ", " + normals[i].y + ", " + normals[i].z);
-	}
-	for (i = 0; i < triangleIndicesArray.length; i+=3) {
-	    System.out.println(triangleIndicesArray[i] + ", " + triangleIndicesArray[i + 1] + ", " + triangleIndicesArray[i + 2]);
 	}*/
+	for (i = 0; i < normals.size(); i++) {
+	    System.out.println(i + ":\t" + finalVertList.get(i).x + ", " + finalVertList.get(i).y + ", " + finalVertList.get(i).z + "\n\t" + normals.get(i).x + ", " + normals.get(i).y + ", " + normals.get(i).z);
+	}
+	//for (i = 0; i < triangleIndicesArray.length; i+=3) {
+	 //   System.out.println(triangleIndicesArray[i] + ", " + triangleIndicesArray[i + 1] + ", " + triangleIndicesArray[i + 2]);
+	//}
 	Vector3f[] normalsArray = new Vector3f[normals.size()];
 	triangleIndicesArray = new int[triangleIndices.size()];
 	Vector3f[] finalVertListArray = new Vector3f[finalVertList.size()];
