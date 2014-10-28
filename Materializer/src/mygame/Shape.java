@@ -40,13 +40,12 @@ public class Shape extends Node {
     }
     
     private void initMaterials() {
-        mat1 = new Material(main.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
-
-
-       // mat1.setColor("Color", ColorRGBA.Blue);
-        //mat1.setFloat("Shininess", 4f); // shininess from 1-128
-        
-        mat1.setBoolean("VertexColor", true);
+        mat1 = new Material(main.getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");
+        mat1.setBoolean("UseMaterialColors", true);
+	mat1.setColor("Ambient", ColorRGBA.Gray);
+        mat1.setColor("Diffuse", ColorRGBA.Blue);
+        mat1.setColor("Specular", ColorRGBA.Red);
+        mat1.setFloat("Shininess", 2f); // shininess from 1-128
 
         geo.setMaterial(mat1);
     }
@@ -58,7 +57,7 @@ public class Shape extends Node {
         for(int i = 0; i < main.app.verts.size(); i++)
             vertices[i] = (Vector3f)main.app.verts.get(i);
         
-        CustomMesh box = new CustomMesh(vertices, .5f, true);
+        CustomMesh box = new CustomMesh(vertices, .5f);
         geo = new Geometry("shape", box);
         
         

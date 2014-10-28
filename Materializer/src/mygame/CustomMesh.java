@@ -26,11 +26,12 @@ public class CustomMesh extends Mesh {
     private int[] triangleIndicesArray;
     private ArrayList triangleIndices;
     private ArrayList dog;
+    private ArrayList<Vector3f> finalVertList;
+    private ArrayList<Vector3f> normals;
     private int length; //num of verts per side
     private float depth;
     private boolean vertColor;
     private float[] colorArray;
-    private float[] normals;
     public Vector3f topFrontPoint, bottomFrontPoint;
     public Vector3f center;
 
@@ -40,8 +41,9 @@ public class CustomMesh extends Mesh {
         length = verts.length;
 	backVerts = new Vector3f[length];
         triangleIndices = new ArrayList();
+	finalVertList = new ArrayList<Vector3f>();
 	dog = new ArrayList();//keeps track of removed verts
-        normals = new float[length * 18];   //x, y, and z for all vertices (front and back), each vertex is tripled. length * 3 * 2 * 3
+        normals = new ArrayList<Vector3f>();
 	this.depth = depth;
 	this.vertColor = vertColor;
         
@@ -50,9 +52,9 @@ public class CustomMesh extends Mesh {
 	getTopBottomVerts();
         generateBackSideVerts();
         generateFrontTriangles();
-	generateBackTriangles();
+//	generateBackTriangles();
 	generateSideTriangles();
-//        generateNormals();
+      //  generateNormals();
 	
 	//4 floats to represent color for one vertex, and there are vertices for front and back, so length * 8
 	if(vertColor) {
@@ -66,7 +68,7 @@ public class CustomMesh extends Mesh {
     
     //constructor without color option, defaults to uncolored
     public CustomMesh(Vector3f[] verts, float depth) {
-	this(verts, depth, false);
+	this(verts, depth, true);
     }
     
     //ensure vertices are in counterclockwise order. if not, reverse their order
@@ -179,28 +181,29 @@ public class CustomMesh extends Mesh {
 	    
 	      //if left hand turn, and if this triangle does not contain any vertices
 	    if (res > 0 && !triangleContainsVertex(i, next, nextnext)) { 
-		addTriangle(nextnext, next, i);
+		addTriangle(frontVerts[nextnext], frontVerts[next], frontVerts[i]);
 		dog.add(next);
+		addTriangle(backVerts[i], backVerts[next], backVerts[nextnext]);
 	    }
 	    i = iterate(i, 1);
         }
 	//final triangle
-	addTriangle(iterate(i, 2), iterate(i,1), i);
+	addTriangle(frontVerts[iterate(i, 2)], frontVerts[iterate(i,1)], frontVerts[i]);
+	addTriangle(backVerts[i], backVerts[iterate(i,1)], backVerts[iterate(i,2)]);
         
     }
     
     private void generateBackTriangles() {
 	
-	int numTriangleVerts = triangleIndices.size();
 	int v1, v2, v3;
 	
-	for (int i = 0; i < numTriangleVerts; i += 3) {
+	for (int i = 0; i < triangleIndices.size(); i += 3) {
 	    
-	    v1 = length + (Integer) triangleIndices.get(i);
-	    v2 = length + (Integer) triangleIndices.get(i+1);
-	    v3 = length + (Integer) triangleIndices.get(i+2);
+	    v1 = (Integer) triangleIndices.get(i);
+	    v2 = (Integer) triangleIndices.get(i+1);
+	    v3 = (Integer) triangleIndices.get(i+2);
 	    
-	    addTriangle(v3, v2, v1);
+	    addTriangle(backVerts[v3], backVerts[v2], backVerts[v1]);
 	}
     }
     
@@ -215,66 +218,41 @@ public class CustomMesh extends Mesh {
   
    private void generateSideTriangles() {
 	for (int i = 0; i < length-1; i++) {
-	    addTriangle(i, i+1, i+1+length);
-	    addTriangle(i+1+length, i+length, i);
+	    addTriangle(frontVerts[i], frontVerts[i+1], backVerts[i+1]);
+	    addTriangle(backVerts[i+1], backVerts[i], frontVerts[i]);
 	}
-	addTriangle(length-1, 0, length);
-	addTriangle(length, length*2-1, length-1);
+	addTriangle(frontVerts[length-1], frontVerts[0], backVerts[0]);
+	addTriangle(backVerts[0], backVerts[length-1], frontVerts[length-1]);
     }
     
    private void generateNormals() {
        int i;
-       
+       /*
        //one set of normals is z unit vector
-       for (i = 0; i < length * 3; i += 3) {
-           normals[i] = 0;
-           normals[i + 1] = 0;
-           normals[i + 2] = 1;
+       for (i = 0; i < length; i++) {
+           normals[i] = Vector3f.UNIT_Z.negate();
        }
-       for (i = length * 3; i < length * 6; i += 3) {
-           normals[i] = 0;
-           normals[i + 1] = 0;
-           normals[i + 2] = -1;
+       for (i = length; i < length * 2; i++) {
+           normals[i] = Vector3f.UNIT_Z;
        }
       
        Vector3f v1, v2, cross;
-       float v1x, v1y, v2x, v2y;
        
-       for (i = length; i < length * 3; i += 3) {
-           
-           //vector from frontVerts[i] to frontVerts[i + 1]
-           v1x = frontVerts[(i + 1) % length].x - frontVerts[i % length].x;
-           v1y = frontVerts[(i + 1) % length].y - frontVerts[i % length].y;
-           
-           //vector from frontVerts[i] to backVerts[i + 1]
-           v2x = backVerts[(i + 1) % length].x - frontVerts[i % length].x;
-           v2y = backVerts[(i + 1) % length].y - frontVerts[i % length].y;
-           
-           v1 = new Vector3f(v1x, v1y, 0);
-           v2 = new Vector3f(v2x, v2y, depth);
+       for (i = 0; i < length; i++) {
+	   
+	   v1 = frontVerts[(i + 1) % length].subtract(frontVerts[i]);
+	   v2 = backVerts[(i + 1) % length].subtract(frontVerts[i]); 
 
            //calculate cross product
            v1 = v1.normalize();
            v2 = v2.normalize();
            cross = v1.cross(v2);
-           cross = cross.normalize();
            
-           normals[i + length * 6] = cross.x;
-           normals[i + 1 + length * 6] = cross.y;
-           normals[i + 2 + length * 6] = cross.z;
-           
-           normals[i + length * 9] = cross.x;
-           normals[i + 1 + length * 9] = cross.y;
-           normals[i + 2 + length * 9] = cross.z;
-           
-           normals[i + length * 12] = cross.x;
-           normals[i + 1 + length * 12] = cross.y;
-           normals[i + 2 + length * 12] = cross.z;
-           
-           normals[i + length * 15] = cross.x;
-           normals[i + 1 + length * 15] = cross.y;
-           normals[i + 2 + length * 15] = cross.z;
-       }
+           normals[i + length * 2] = cross;
+           normals[i + length * 3] = cross;
+           normals[((i + 1)%length)+ length * 4] = cross;
+           normals[((i + 1)%length)+ length * 5] = cross;
+       }*/
    }
    
    //returns vector from frontVerts[p1] to frontVerts[p2]
@@ -297,10 +275,25 @@ public class CustomMesh extends Mesh {
     
     
     //adds triangle to triangleIndices
-    private void addTriangle(int v1, int v2, int v3) {
-        triangleIndices.add(v1);
-        triangleIndices.add(v2);
-        triangleIndices.add(v3);
+    private void addTriangle(Vector3f v1, Vector3f v2, Vector3f v3) {
+	
+	triangleIndices.add(finalVertList.size());
+	finalVertList.add(v1);
+        triangleIndices.add(finalVertList.size());
+	finalVertList.add(v2);
+        triangleIndices.add(finalVertList.size());
+	finalVertList.add(v3); 
+	Vector3f cross1 = v1.cross(v2).normalize();
+	Vector3f cross2 = v2.cross(v3).normalize();
+	Vector3f cross3 = v3.cross(v1).normalize();
+	Vector3f cross = new Vector3f();
+	
+	cross.x = Math.abs((cross1.x + cross2.x + cross3.x) / 3f);
+	cross.y = Math.abs((cross1.y + cross2.y + cross3.y) / 3f);
+	cross.z = Math.abs((cross1.z + cross2.z + cross3.z) / 3f);
+	normals.add(cross);
+	normals.add(cross);
+	normals.add(cross);
     }
     
     //returns true if the triangle represented by the three points (indices into frontVerts) contains any vertex
@@ -374,7 +367,7 @@ public class CustomMesh extends Mesh {
         //size is length * 6 because the number of vertices are tripled, to allow
             //realistic shading (for each vertex, we have 3 normals, because
             //each vertex contributes to 3 faces)
-	Vector3f[] verts = new Vector3f[length * 6];
+	/*Vector3f[] verts = new Vector3f[length * 6];
 	for (i = 0; i < length; i++) {
 	    verts[i] = frontVerts[i];
             verts[i + (length * 2)] = verts[i];
@@ -387,12 +380,30 @@ public class CustomMesh extends Mesh {
         }
 	
 	//get triangle indices from arraylist to array
-	triangleIndicesArray = new int[triangleIndices.size()];
-	for (i = 0; i < triangleIndices.size(); i++)
+	triangleIndicesArray = new int[triangleIndices.size() * 3];
+	for (i = 0; i < triangleIndices.size(); i++) {
 	    triangleIndicesArray[i] = (Integer) triangleIndices.get(i);
+	    triangleIndicesArray[i + triangleIndices.size()] = (Integer) triangleIndices.get(i) + length*2;
+	    triangleIndicesArray[i + triangleIndices.size() * 2] = (Integer) triangleIndices.get(i) + length*4;
+	}
+	for (i = 0; i < normals.length; i++) {
+	    System.out.println(i + ":\t" + verts[i].x + ", " + verts[i].y + ", " + verts[i].z + "\n\t" + normals[i].x + ", " + normals[i].y + ", " + normals[i].z);
+	}
+	for (i = 0; i < triangleIndicesArray.length; i+=3) {
+	    System.out.println(triangleIndicesArray[i] + ", " + triangleIndicesArray[i + 1] + ", " + triangleIndicesArray[i + 2]);
+	}*/
+	Vector3f[] normalsArray = new Vector3f[normals.size()];
+	triangleIndicesArray = new int[triangleIndices.size()];
+	Vector3f[] finalVertListArray = new Vector3f[finalVertList.size()];
+	for (i = 0; i < finalVertList.size(); i++) {
+	    finalVertListArray[i] = (Vector3f) finalVertList.get(i);
+	    triangleIndicesArray[i] = (Integer)triangleIndices.get(i);
+	    normalsArray[i] = (Vector3f) normals.get(i);
+	}
 	
-	setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(verts));
-        setBuffer(Type.Index,    3, BufferUtils.createIntBuffer(triangleIndicesArray));
+	setBuffer(Type.Position,    3, BufferUtils.createFloatBuffer(finalVertListArray));
+        setBuffer(Type.Index,	    1, BufferUtils.createIntBuffer(triangleIndicesArray));
+	setBuffer(Type.Normal,	    3, BufferUtils.createFloatBuffer(normalsArray));
 	if(vertColor)
 	    setBuffer(Type.Color, 4, colorArray);
 	updateBound();
