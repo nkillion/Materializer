@@ -16,6 +16,7 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -41,6 +42,8 @@ public class Player implements ActionListener {
     CollisionResults results;
     Shape currentObj;
     RigidBodyControl heldObj;
+    Vector3f heldObjRotate = Vector3f.ZERO;
+    float[] floats;
 
     public Player(Camera cam, BulletAppState bullet, Main main) {
         forward = backward = left = right = isCrouched = hasObj = false;
@@ -84,6 +87,10 @@ public class Player implements ActionListener {
         inputManager.addMapping("Grenade", new KeyTrigger(KeyInput.KEY_G));
         inputManager.addMapping("Action", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
 	inputManager.addMapping("Pickup", new KeyTrigger(KeyInput.KEY_Q));
+	inputManager.addMapping("rLeft", new KeyTrigger(KeyInput.KEY_NUMPAD4));
+	inputManager.addMapping("rRight", new KeyTrigger(KeyInput.KEY_NUMPAD6));
+	inputManager.addMapping("rUp", new KeyTrigger(KeyInput.KEY_NUMPAD8));
+	inputManager.addMapping("rDown", new KeyTrigger(KeyInput.KEY_NUMPAD2));
         inputManager.addListener(this, "Left");
         inputManager.addListener(this, "Right");
         inputManager.addListener(this, "Forward");
@@ -94,6 +101,10 @@ public class Player implements ActionListener {
         inputManager.addListener(this, "Drop");
         inputManager.addListener(this, "Action");
 	inputManager.addListener(this, "Pickup");
+	inputManager.addListener(analogListener, "rLeft");
+	inputManager.addListener(analogListener, "rRight");
+	inputManager.addListener(analogListener, "rUp");
+	inputManager.addListener(analogListener, "rDown");
     }
 	//change to switch?!
     public void onAction(String binding, boolean isPressed, float tpf) {
@@ -155,6 +166,7 @@ public class Player implements ActionListener {
 			}
 		    }
 		} else {
+		    heldObj.clearForces();
 		    hasObj = false;
 		    heldObj = null;
 		}
@@ -193,7 +205,15 @@ public class Player implements ActionListener {
     }
     private AnalogListener analogListener = new AnalogListener() {
         public void onAnalog(String name, float intensity, float tpf) {
-            if (name.equals("PickUp")) {
+	    if (name.equals("rUp")) {
+		heldObjRotate = heldObjRotate.add(Vector3f.UNIT_Z.mult(tpf*3));
+	} else if (name.equals("rDown")) {
+		heldObjRotate = heldObjRotate.add(Vector3f.UNIT_Z.mult(tpf*3).negate());
+	} else if (name.equals("rLeft")) {
+		heldObjRotate = heldObjRotate.add(Vector3f.UNIT_X.mult(tpf*3));
+	} else if (name.equals("rRight")) {
+		heldObjRotate = heldObjRotate.add(Vector3f.UNIT_X.mult(tpf*3).negate());
+	} else if (name.equals("PickUp")) {
                 // Reset results list.
                 CollisionResults results = new CollisionResults();
                 // Aim the ray from camera location in camera direction
@@ -243,7 +263,9 @@ public class Player implements ActionListener {
 
         if (hasObj) {
             heldObj.setPhysicsLocation(pNode.getLocalTranslation().add(cam.getDirection().mult(5f)));
-	    heldObj.setPhysicsRotation(cam.getRotation());
+	    floats = heldObjRotate.toArray(floats);
+	    System.out.println(floats[0] + " " + floats[1] + " " + floats[2]);
+	    heldObj.setPhysicsRotation(cam.getRotation().add(new Quaternion(floats)));
         }
 
 
@@ -262,10 +284,5 @@ public void pickUp(Shape s) {
 
 
     public void drop() {
-        main.getRootNode().attachChild(currentObj);
-        currentObj.controller.getRigidBodyControl().setPhysicsLocation(pLoc);
-        currentObj.setLocalTranslation(pLoc.add(10f, 0f, 10f));
-       
-        System.out.println("dropping");
     }
 }
