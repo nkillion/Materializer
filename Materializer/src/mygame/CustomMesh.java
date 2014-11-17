@@ -34,6 +34,8 @@ public class CustomMesh extends Mesh {
     private float[] colorArray;
     public Vector3f topFrontPoint, bottomFrontPoint;
     public Vector3f center;
+    float totalTriArea;
+    Vector3f weightedTriArea;
 
     public CustomMesh(Vector3f[] verts, float depth, boolean vertColor) {
         	
@@ -46,12 +48,14 @@ public class CustomMesh extends Mesh {
         normals = new ArrayList<Vector3f>();
 	this.depth = depth;
 	this.vertColor = vertColor;
+	totalTriArea = 0f;
+	weightedTriArea = Vector3f.ZERO;
         
 	makeCCW();
-	getCenterAtOrigin();
 	getTopBottomVerts();
         generateBackSideVerts();
         generateFrontTriangles();
+	getCenterAtOrigin();
 //	generateBackTriangles();
 	generateSideTriangles();
       //  generateNormals();
@@ -117,26 +121,29 @@ public class CustomMesh extends Mesh {
 
     }
     
+    
+    private void calcTriArea(Vector3f p1, Vector3f p2, Vector3f p3) {
+	float w = Math.abs(Math.max(Math.max(p1.x, p2.x), p3.x) - Math.min(Math.min(p1.x, p2.x), p3.x));
+	float h = Math.abs(Math.max(Math.max(p1.y, p2.y), p3.y) - Math.min(Math.min(p1.y, p2.y), p3.y));
+	
+	float area = (w*h)/2f;
+	Vector3f avg = (p1.add(p2).add(p3)).divide(3f);
+	
+	weightedTriArea = weightedTriArea.add(avg.mult(area));
+	totalTriArea += area;
+    }
+    
     private void getCenterAtOrigin() {
-
-	float x = 0;
-	float y = 0;
-	
-	for (int i = 0; i < length; i++) {
-	    x += frontVerts[i].x;
-	    y += frontVerts[i].y;
-	}
-	 
-	x /=   length;
-	y /= length;
-	float z = depth / 2f;
-	
-	Vector3f center = new Vector3f(x, y, z);
+	Vector3f center = weightedTriArea.divide(totalTriArea);
+	center.z = depth / 2f;
 	
 	for (int i = 0; i < length; i++) {
 	    frontVerts[i].y = frontVerts[i].y - center.y;
 	    frontVerts[i].x = frontVerts[i].x - center.x;
 	    frontVerts[i].z = frontVerts[i].z - center.z;
+	    backVerts[i].y = backVerts[i].y - center.y;
+	    backVerts[i].x = backVerts[i].x - center.x;
+	    backVerts[i].z = backVerts[i].z - center.z;
 	}
 	
     }
@@ -182,6 +189,7 @@ public class CustomMesh extends Mesh {
 	      //if left hand turn, and if this triangle does not contain any vertices
 	    if (res > 0 && !triangleContainsVertex(i, next, nextnext)) { 
 		addTriangle(frontVerts[nextnext], frontVerts[next], frontVerts[i]);
+		calcTriArea(frontVerts[nextnext], frontVerts[next], frontVerts[i]);
 		dog.add(next);
 		addTriangle(backVerts[i], backVerts[next], backVerts[nextnext]);
 	    }
